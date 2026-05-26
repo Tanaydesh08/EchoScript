@@ -1,9 +1,11 @@
 package com.echoscript.backend.service;
 
+import com.echoscript.backend.dto.AuthResponse;
 import com.echoscript.backend.dto.LoginRequest;
 import com.echoscript.backend.dto.RegisterRequest;
 import com.echoscript.backend.model.User;
 import com.echoscript.backend.repository.UserRepository;
+import com.echoscript.backend.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     public String register(RegisterRequest request){
         if (userRepository.existsByEmail(request.getEmail())){
@@ -29,15 +32,18 @@ public class AuthService {
         return "User Registered Successfully";
     }
 
-    public User login(LoginRequest request){
+    public AuthResponse login(LoginRequest request){
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User Not Found"));
 
         if (!passwordEncoder.matches(
                 request.getPassword(),
                 user.getPassword())){
-            throw new RuntimeException("Invalid Credentials...!!");
+            throw new RuntimeException("Invalid Credentials");
         }
-        return user;
+
+        String token = jwtUtil.generateToken(user.getEmail());
+
+        return new AuthResponse(token);
     }
 }
