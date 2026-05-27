@@ -21,9 +21,9 @@ public class SecurityConfig {
                                 SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers(
-                                "/api/auth/**"
-                        )
-                                .permitAll().anyRequest()
+                                "/api/auth/**",
+                                        "/api/speech/upload"
+                        ).permitAll().anyRequest()
                                 .authenticated())
                 .addFilterBefore(jwtFilter,
                         UsernamePasswordAuthenticationFilter.class);
