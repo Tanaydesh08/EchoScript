@@ -1,7 +1,10 @@
 package com.echoscript.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -21,4 +24,8 @@ public class User {
     private String email;
 
     private String password;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Transcription> transcriptions;
 }

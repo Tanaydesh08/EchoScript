@@ -41,7 +41,6 @@ public class JwtAuthenticationFilter
         }
 
         String token = authHeader.substring(7);
-
         String email =
                 jwtUtil.extractUsername(token);
 
